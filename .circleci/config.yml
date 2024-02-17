@@ -14,8 +14,8 @@ jobs:
       - run:
           name: Configure Git
           command: |
-            git config --global user.email "wndsfr21@Gmail.com"
-            git config --global user.name "Alex"
+            git config --global user.email "you@example.com"
+            git config --global user.name "Your Name"
       - run:
           name: Clone Repos, Concatenate Rust Files, and Push using PAT
           command: |
@@ -24,27 +24,26 @@ jobs:
             git clone https://github.com/wndsrfr21/merge_divide.git
             git clone https://github.com/wndsrfr21/merge_main.git
             
-            # Create a directory for the final repository and initialize it
-            mkdir final_repo && cd final_repo
-            git init
+            # Create the merged.rs file
+            touch merged.rs
             
-            # Concatenate Rust source files from each cloned repo into a single file
-            for repo in ../merge_add ../merge_divide ../merge_main; do
-              for file in $repo/*.rs; do
-                cat $file >> merged.rs
+            # Concatenate Rust source files from each cloned repo into merged.rs
+            for repo in merge_add merge_divide merge_main; do
+              for file in $(find $repo -type f -name '*.rs'); do
+                cat "$file" >> merged.rs
                 echo "" >> merged.rs # Ensure a newline between files
               done
             done
             
-            # Add, commit, and push the combined file to the new repository using PAT
+            # Prepare the new repository
+            git init
+            git remote add origin https://x-access-token:${GH_TOKEN}@github.com/wndsrfr21/merge_test.git
+            git checkout -b main
+            
+            # Commit and push merged.rs to the repository
             git add merged.rs
-            git commit -m "Concatenated Rust files from multiple repos"
-            
-            # Setup git to use HTTPS with PAT for authentication
-           # git remote add origin https://x-access-token:${GH_TOKEN}@github.com/wndsrfr21/merge_test.git
-            
-            git branch -M main
-            git push -u origin main
+            git commit -m "Concatenated Rust files from multiple repos into merged.rs"
+            git push --set-upstream origin main
 
 workflows:
   version: 2
