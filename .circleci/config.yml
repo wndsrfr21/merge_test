@@ -35,6 +35,10 @@ jobs:
               done
             done
       - run:
+          name: Print merged.rs
+          command: |
+            cat merged.rs
+      - run:
           name: Update merged_output Repo
           command: |
             # Clone the merge_test repository using the PAT for authentication
