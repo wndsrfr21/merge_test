@@ -14,10 +14,10 @@ jobs:
       - run:
           name: Configure Git
           command: |
-            git config --global user.email "wndsrfr21@gmail.com"
+            git config --global user.email "wndsfr21@Gmail.com"
             git config --global user.name "Alex"
       - run:
-          name: Clone Repos, Concatenate Rust Files, and Push
+          name: Clone Repos, Concatenate Rust Files, and Push using PAT
           command: |
             # Clone each repository
             git clone https://github.com/wndsrfr21/merge_add.git
@@ -29,21 +29,20 @@ jobs:
             git init
             
             # Concatenate Rust source files from each cloned repo into a single file
-            # Adjust the file pattern (*.rs) as needed for your specific case
             for repo in ../merge_add ../merge_divide ../merge_main; do
               for file in $repo/*.rs; do
                 cat $file >> merged.rs
                 echo "" >> merged.rs # Ensure a newline between files
               done
             done
-
-            # print out merged.rs to confirm successful merge
-            cat merged.rs
             
-            # Add, commit, and push the combined file to the new repository
+            # Add, commit, and push the combined file to the new repository using PAT
             git add merged.rs
             git commit -m "Concatenated Rust files from multiple repos"
-            git remote add origin https://github.com/wndsrfr21/merge_test.git
+            
+            # Setup git to use HTTPS with PAT for authentication
+            git remote add origin https://x-access-token:${GH_TOKEN}@github.com/wndsrfr21/merge_test.git
+            
             git branch -M main
             git push -u origin main
 
