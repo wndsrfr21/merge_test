@@ -14,12 +14,12 @@ jobs:
       - run:
           name: Configure Git
           command: |
-            git config --global user.email "wndsrfr21@gmail.com"
-            git config --global user.name "Alex"
+            git config --global user.email "you@example.com"
+            git config --global user.name "Your Name"
       - run:
-          name: Clone Repos, Concatenate Rust Files
+          name: Clone Repos and Concatenate Rust Files
           command: |
-            # Clone each repository ch
+            # Clone each source repository
             git clone https://github.com/wndsrfr21/merge_add.git
             git clone https://github.com/wndsrfr21/merge_divide.git
             git clone https://github.com/wndsrfr21/merge_main.git
@@ -31,34 +31,31 @@ jobs:
             for repo in merge_add merge_divide merge_main; do
               for file in $(find $repo -type f -name '*.rs'); do
                 cat "$file" >> merged.rs
-                echo "" >> merged.rs # Ensure a newline between files
+                echo "" >> merged.rs # Add a newline between files
               done
             done
       - run:
-          name: Update merge_test Repo
+          name: Push merged.rs to merged_output Repo on app Branch
           command: |
-            # Clone the merge_test repository using the PAT for authentication
-            git clone https://x-access-token:${GH_TOKEN}@github.com/wndsrfr21/merge_test.git
+            # Clone the target repository using the PAT for authentication
+            git clone https://x-access-token:${GH_TOKEN}@github.com/wndsrfr21/merged_output.git
             
             # Navigate into the repository directory
-            cd merge_test
+            cd merged_output
             
-            # Check and switch to the appropriate branch (main or master)
-            if git rev-parse --verify main >/dev/null 2>&1; then
-              git checkout main
-            elif git rev-parse --verify master >/dev/null 2>&1; then
-              git checkout master
+            # Check if the 'app' branch exists and switch to it; create it if it doesn't exist
+            if git show-ref --verify --quiet refs/heads/app; then
+              git checkout app
             else
-              echo "Error: Default branch (main or master) not found."
-              exit 1
+              git checkout -b app
             fi
             
-            # Copy the merged.rs file into the repository
+            # Copy merged.rs to the repository
             cp ../merged.rs .
             
-            # Add, commit, and push the changes
+            # Add, commit, and push the changes to the 'app' branch
             git add merged.rs
-            git commit -m "Update merged.rs with latest changes"
+            git commit -m "Update merged.rs with the latest changes [skip ci]"
             git push origin HEAD
 
 workflows:
