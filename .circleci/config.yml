@@ -41,7 +41,7 @@ jobs:
             git commit -m "Concatenated Rust files from multiple repos"
             
             # Setup git to use HTTPS with PAT for authentication
-            git remote add origin https://x-access-token:${GH_TOKEN}@github.com/wndsrfr21/merge_test.git
+           # git remote add origin https://x-access-token:${GH_TOKEN}@github.com/wndsrfr21/merge_test.git
             
             git branch -M main
             git push -u origin main
