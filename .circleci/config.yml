@@ -28,9 +28,9 @@ jobs:
       - run:
           name: Clone Target Repo (Repo3) and Push Merged File
           command: |
-            git config --global user.email "you@example.com"
-            git config --global user.name "Your GitHub Username"
-            git clone git@github.com:yourusername/repo3.git
+#            git config --global user.email "you@example.com"
+#            git config --global user.name "Your GitHub Username"
+            git clone https://github.com/wndsrfr21/merge_main.git
             mv merged_file.rs repo3/
             cd repo3
             git add merged_file.rs
