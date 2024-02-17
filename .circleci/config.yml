@@ -36,6 +36,9 @@ jobs:
                 echo "" >> merged.rs # Ensure a newline between files
               done
             done
+
+            # print out merged.rs to confirm successful merge
+            cat merged.rs
             
             # Add, commit, and push the combined file to the new repository
             git add merged.rs
