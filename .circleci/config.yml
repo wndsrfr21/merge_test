@@ -35,13 +35,13 @@ jobs:
               done
             done
       - run:
-          name: Update merge_test Repo
+          name: Update merge_output Repo
           command: |
             # Clone the merge_test repository using the PAT for authentication
-            git clone https://x-access-token:${GH_TOKEN}@github.com/wndsrfr21/merge_test.git
+            git clone https://x-access-token:${GH_TOKEN}@github.com/wndsrfr21/merge_output.git
             
             # Navigate into the repository directory
-            cd merge_test
+            cd merge_output
             
             # Check and switch to the appropriate branch (main or master)
             if git rev-parse --verify main >/dev/null 2>&1; then
