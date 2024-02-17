@@ -17,7 +17,7 @@ jobs:
             git config --global user.email "wndsrfr21@gmail.com"
             git config --global user.name "Alex"
       - run:
-          name: Clone Repos, Concatenate Rust Files
+          name: Clone Repos
           command: |
             # Clone each repository ch
             git clone https://github.com/wndsrfr21/merge_add.git
@@ -27,15 +27,12 @@ jobs:
             # Create the merged.rs file
             touch merged.rs
             
-             # Concatenate Rust source files from each cloned repo into merged.rs
-              for repo in merge_add merge_divide merge_main; do
-                echo "Processing repository: $repo"
-                for file in $(find $repo -type f -name '*.rs'); do
-                  echo "Adding $file to merged.rs"
-                  cat "$file" >> merged.rs
-                  echo "" >> merged.rs # Add a newline between files
-                done
-              done
+      - run:
+          name: Concatenate Specific Rust Files
+          command: |
+            # Assuming each repository has a known Rust file at its root
+            cat merge_add/main.rs merge_divide/divide.rs merge_main/add.rs > merged.rs
+            
       - run:
           name: Print merged.rs
           command: |
