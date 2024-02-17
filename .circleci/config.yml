@@ -31,7 +31,7 @@ jobs:
           name: Concatenate Specific Rust Files
           command: |
             # Assuming each repository has a known Rust file at its root
-            cat ./merge_add/main.rs ./merge_divide/divide.rs ./merge_main/add.rs > merged.rs
+            cat ./merge_add/add.rs ./merge_divide/divide.rs ./merge_main/main.rs > merged.rs
             
       - run:
           name: Print merged.rs
