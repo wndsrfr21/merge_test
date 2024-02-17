@@ -17,7 +17,7 @@ jobs:
             git config --global user.email "you@example.com"
             git config --global user.name "Your Name"
       - run:
-          name: Clone Repos, Concatenate Rust Files, and Push using PAT
+          name: Clone Repos, Concatenate Rust Files
           command: |
             # Clone each repository
             git clone https://github.com/wndsrfr21/merge_add.git
@@ -34,16 +34,20 @@ jobs:
                 echo "" >> merged.rs # Ensure a newline between files
               done
             done
+      - run:
+          name: Update merge_test Repo
+          command: |
+            # Clone the merge_test repository
+            git clone https://x-access-token:${GH_TOKEN}@github.com/wndsrfr21/merge_test.git
             
-            # Prepare the new repository
-            git init
-            git remote add origin https://x-access-token:${GH_TOKEN}@github.com/wndsrfr21/merge_test.git
-            git checkout -b main
+            # Copy merged.rs into the clone of merge_test
+            cp merged.rs merge_test/
             
-            # Commit and push merged.rs to the repository
+            # Commit and push the change
+            cd merge_test
             git add merged.rs
-            git commit -m "Concatenated Rust files from multiple repos into merged.rs"
-            git push --set-upstream origin main
+            git commit -m "Update merged.rs with latest changes"
+            git push origin master
 
 workflows:
   version: 2
