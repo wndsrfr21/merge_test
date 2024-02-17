@@ -19,7 +19,7 @@ jobs:
       - run:
           name: Clone Repos, Concatenate Rust Files
           command: |
-            # Clone each repository
+            # Clone each repository ch
             git clone https://github.com/wndsrfr21/merge_add.git
             git clone https://github.com/wndsrfr21/merge_divide.git
             git clone https://github.com/wndsrfr21/merge_main.git
