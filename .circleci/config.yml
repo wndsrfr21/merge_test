@@ -1,0 +1,44 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@3.0.0
+
+jobs:
+  merge-and-push:
+    docker:
+      - image: 'cimg/rust:1.56.0' # Using the Rust image since we're dealing with Rust files
+    steps:
+      - checkout
+      - run:
+          name: Setup SSH Keys and Known Hosts
+          command: |
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+      - run:
+          name: Clone Repo1
+          command: |
+            git clone git@github.com:yourusername/repo1.git
+      - run:
+          name: Clone Repo2
+          command: |
+            git clone git@github.com:yourusername/repo2.git
+      - run:
+          name: Merge Rust Files
+          command: |
+            cat repo1/file1.rs repo2/file2.rs > merged_file.rs
+      - run:
+          name: Clone Target Repo (Repo3) and Push Merged File
+          command: |
+            git config --global user.email "you@example.com"
+            git config --global user.name "Your GitHub Username"
+            git clone git@github.com:yourusername/repo3.git
+            mv merged_file.rs repo3/
+            cd repo3
+            git add merged_file.rs
+            git commit -m "Merged file1.rs and file2.rs"
+            git push
+
+workflows:
+  version: 2
+  merge_and_push_workflow:
+    jobs:
+      - merge-and-push
