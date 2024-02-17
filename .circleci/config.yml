@@ -1,48 +1,51 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@3.0.0
-
 jobs:
-  merge-and-push:
+  build:
     docker:
-      - image: 'cimg/rust:1.56.0' # Using the Rust image since we're dealing with Rust files
+      - image: cimg/base:stable
     steps:
       - checkout
       - run:
-          name: Setup SSH Keys and Known Hosts
+          name: Install Git
           command: |
-            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+            sudo apt-get update
+            sudo apt-get install -y git
       - run:
-          name: Clone Repo1
-          command: |
-            git clone https://github.com/wndsrfr21/merge_add.git
-      - run:
-          name: Clone Repo2
-          command: |
-            git clone https://github.com/wndsrfr21/merge_divide.git
-      - run:
-          name: Clone Repo3
-          command: |
-            git clone https://github.com/wndsrfr21/merge_main.git
-      - run:
-          name: Merge Rust Files
-          command: |
-            cat merge_add/add.rs merge_divide/divide.rs merge_main/main.rs > merged_file.rs
-      - run:
-          name: Clone Target Repo (Repo3) and Push Merged File
+          name: Configure Git
           command: |
             git config --global user.email "you@example.com"
-            git config --global user.name "Your GitHub Username"
-            git clone https://github.com/wndsrfr21/merge_test.git
-            mv merged_file.rs merge_test/
-            cd merge_test
-            git add merged_file.rs
-            git commit -m "Merged file1.rs and file2.rs"
-            git push
+            git config --global user.name "Your Name"
+      - run:
+          name: Clone Repos, Concatenate Rust Files, and Push
+          command: |
+            # Clone each repository
+            git clone https://github.com/wndsrfr21/merge_add.git
+            git clone https://github.com/wndsrfr21/merge_divide.git
+            git clone https://github.com/wndsrfr21/merge_main.git
+            
+            # Create a directory for the final repository and initialize it
+            mkdir final_repo && cd final_repo
+            git init
+            
+            # Concatenate Rust source files from each cloned repo into a single file
+            # Adjust the file pattern (*.rs) as needed for your specific case
+            for repo in ../merge_add ../merge_divide ../merge_main; do
+              for file in $repo/*.rs; do
+                cat $file >> merged.rs
+                echo "" >> merged.rs # Ensure a newline between files
+              done
+            done
+            
+            # Add, commit, and push the combined file to the new repository
+            git add merged.rs
+            git commit -m "Concatenated Rust files from multiple repos"
+            git remote add origin https://github.com/wndsrfr21/merge_test.git
+            git branch -M main
+            git push -u origin main
 
 workflows:
   version: 2
-  merge_and_push_workflow:
+  build_and_push:
     jobs:
-      - merge-and-push
+      - build
