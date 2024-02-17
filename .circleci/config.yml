@@ -27,13 +27,15 @@ jobs:
             # Create the merged.rs file
             touch merged.rs
             
-            # Concatenate Rust source files from each cloned repo into merged.rs
-            for repo in merge_add merge_divide merge_main; do
-              for file in $(find $repo -type f -name '*.rs'); do
-                cat "$file" >> merged.rs
-                echo "" >> merged.rs # Ensure a newline between files
+             # Concatenate Rust source files from each cloned repo into merged.rs
+              for repo in merge_add merge_divide merge_main; do
+                echo "Processing repository: $repo"
+                for file in $(find $repo -type f -name '*.rs'); do
+                  echo "Adding $file to merged.rs"
+                  cat "$file" >> merged.rs
+                  echo "" >> merged.rs # Add a newline between files
+                done
               done
-            done
       - run:
           name: Print merged.rs
           command: |
