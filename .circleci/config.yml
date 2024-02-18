@@ -19,24 +19,36 @@ jobs:
       - run:
           name: Clone Repos
           command: |
-            # Clone each repository ch
+            # Clone each repository
             git clone https://github.com/wndsrfr21/merge_add.git
             git clone https://github.com/wndsrfr21/merge_divide.git
             git clone https://github.com/wndsrfr21/merge_main.git
             
             # Create the merged.rs file
             touch merged.rs
-            
+
       - run:
-          name: Concatenate Specific Rust Files
+          name: Concatenate Rust Files Except main.rs
           command: |
-            # Assuming each repository has a known Rust file at its root
-            cat ./merge_add/add.rs ./merge_divide/divide.rs ./merge_main/main.rs > merged.rs
-            
+            # Concatenate all .rs files except for main.rs from each repo
+            for repo in merge_add merge_divide; do
+              find "$repo" -type f -name '*.rs' ! -name 'main.rs' -exec cat {} + >> merged.rs
+              echo "" >> merged.rs # Ensure separation between files
+            done
+
+      - run:
+          name: Append main.rs at the End
+          command: |
+            # Assuming main.rs is in merge_main repository
+            cat merge_main/main.rs >> merged.rs
+            echo "Final concatenated Rust file prepared."
+
       - run:
           name: Print merged.rs
           command: |
+            echo "Contents of merged.rs:"
             cat merged.rs
+
       - run:
           name: Update merged_output Repo
           command: |
@@ -61,7 +73,7 @@ jobs:
             
             # Add, commit, and push the changes
             git add merged.rs
-            git commit -m "Update merged.rs with latest changes"
+            git commit -m "Update merged.rs with latest changes [skip ci]"
             git push origin HEAD
 
 workflows:
