@@ -44,7 +44,7 @@ jobs:
       - run:
           name: Copy Rust Files
           command: |
-            find . -type f -name '*.rs' ! -name 'main.rs' ! -name 'merged.rs' -exec rsync -R {} . \;
+            find . -type f -name '*.rs' -exec rsync -R {} . \;
           when: always
 
       # Stage 2: Concatenate all .rs files into merged.rs
