@@ -31,7 +31,7 @@ jobs:
           name: Concatenate Rust Files Except main.rs
           command: |
             # Concatenate all .rs files except for main.rs from each repo
-            find . -type f -name '*.rs' ! -name 'main.rs' -exec cat {} + >> merged.rs
+            find . -type f -name '*.rs' ! -name 'main.rs' ! -name 'merged.rs' -exec cat {} + >> merged.rs
             echo "" >> merged.rs # Ensure separation between concatenated content
 
       - run:
