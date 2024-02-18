@@ -26,6 +26,11 @@ jobs:
             
             # Create the merged.rs file
             touch merged.rs
+      - run:
+          name: Find and List Rust Files
+          command: |
+            echo "Listing all .rs files..."
+            find . -type f -name '*.rs'
 
       - run:
           name: Concatenate Rust Files Except main.rs
