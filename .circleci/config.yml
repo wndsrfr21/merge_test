@@ -45,6 +45,7 @@ jobs:
           name: Find Rust Files
           command: |
             find . -type f -name '*.rs' | grep -vE '(main.rs|merged.rs)$' > rust_files_list.txt
+            cat rust_files_list.txt
           when: always
 
       # Stage 2: Concatenate the filtered Rust files
@@ -52,6 +53,7 @@ jobs:
           name: Concatenate Rust Files
           command: |
             xargs cat < rust_files_list.txt >> merged.rs
+            cat merged.rs
           when: always
 
       # Stage 3: Verify the contents of merged.rs
