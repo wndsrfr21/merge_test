@@ -40,37 +40,20 @@ jobs:
  #           echo "" >> merged.rs # Ensure separation between concatenated content
 #            cat merged.rs
 
-      # Stage 1: Find all Rust files excluding main.rs and merged.rs
+      # Stage 1: Copy all .rs files to the current directory, excluding main.rs and merged.rs
       - run:
-          name: Find Rust Files
+          name: Copy Rust Files
           command: |
-            find . -type f -name '*.rs' | grep -vE '(main.rs|merged.rs)$' > rust_files_list.txt
-            cat rust_files_list.txt
+            find . -type f -name '*.rs' ! -name 'main.rs' ! -name 'merged.rs' -exec rsync -R {} . \;
           when: always
 
-      # Stage 2: Concatenate the filtered Rust files
+      # Stage 2: Concatenate all .rs files into merged.rs
       - run:
           name: Concatenate Rust Files
           command: |
-            xargs cat < rust_files_list.txt >> merged.rs
-            cat merged.rs
+            cat *.rs > merged.rs
           when: always
 
-      # Stage 3: Verify the contents of merged.rs
-      - run:
-          name: Verify Contents of merged.rs
-          command: |
-            echo "Contents of merged.rs:"
-            cat merged.rs
-          when: always
-
-      # Stage 4: Append main.rs at the end of merged.rs
-      - run:
-          name: Append main.rs at the End
-          command: |
-            # Assuming main.rs is in merge_main repository
-            cat merge_main/main.rs >> merged.rs
-            echo "Final concatenated Rust file prepared."
 
       - run:
           name: Print merged.rs
