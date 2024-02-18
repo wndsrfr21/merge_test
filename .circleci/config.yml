@@ -6,12 +6,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      # Ensure rsync is installed
-      - run:
-          name: Install Rsync
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y rsync
+
       - run:
           name: Install Git
           command: |
@@ -32,12 +27,11 @@ jobs:
             
             # Create the merged.rs file
             touch merged.rs
-      - run:
-          name: Find and List Rust Files
-          command: |
-            echo "Listing all .rs files..."
-            find . -type f -name '*.rs'
-
+#      - run:
+#          name: Find and List Rust Files
+#          command: |
+#            echo "Listing all .rs files..."
+#            find . -type f -name '*.rs'
 #      - run:
 #          name: Concatenate Rust Files Except main.rs
 #          command: |
@@ -46,24 +40,18 @@ jobs:
  #           echo "" >> merged.rs # Ensure separation between concatenated content
 #            cat merged.rs
 
-      # Stage 1: Copy all .rs files to the current directory, excluding main.rs and merged.rs
       - run:
-          name: Copy Rust Files
+          name: Concatenate Specific Rust Files
           command: |
-            find . -type f -name '*.rs' -exec rsync -R {} . \;
-          when: always
-
-      # Stage 2: Concatenate all .rs files into merged.rs
-      - run:
-          name: Concatenate Rust Files
-          command: |
-            cat *.rs > merged.rs
-          when: always
-
-
-      - run:
-          name: Print merged.rs
-          command: |
+            # Assign file paths to variables
+            FILE1="./merge_add/add.rs"
+            FILE2="./merge_divide/divide.rs"
+            FILE3="./merge_main/main.rs"
+            
+            # Use the variables in the cat command to concatenate files
+            cat "$FILE1" "$FILE2" "$FILE3" > merged.rs
+            
+            # Optional: Check the content of merged.rs
             echo "Contents of merged.rs:"
             cat merged.rs
 
