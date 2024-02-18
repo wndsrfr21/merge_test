@@ -39,6 +39,12 @@ jobs:
             find . -type f -name '*.rs' | grep -vE '(main.rs|merged.rs)$' | xargs cat >> merged.rs
             echo "" >> merged.rs # Ensure separation between concatenated content
 
+        - run:
+          name: Print merged.rs
+          command: |
+            echo "Contents of merged.rs:"
+            cat merged.rs
+            
       - run:
           name: Append main.rs at the End
           command: |
